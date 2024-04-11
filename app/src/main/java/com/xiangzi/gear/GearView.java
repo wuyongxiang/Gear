@@ -6,14 +6,15 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.xiangzi.gear.entity.Gear;
-import com.xiangzi.gear.entity.NineGearLinkage;
+import com.ninegear.entity.InvoluteGear;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 
 /**
  * Created by Administrator on 2017/9/26.
@@ -21,17 +22,17 @@ import com.xiangzi.gear.entity.NineGearLinkage;
 
 public class GearView extends View {
     float angle = 0;
-    Gear gear;
+    InvoluteGear gear;
     Paint paint1, paint2;
-
+    int width,height;
     public GearView(Context context) {
         super(context);
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-        int height = wm.getDefaultDisplay().getHeight();
-        gear = new Gear(new PointF(width/2,height/2),300,0,context);
+         width = wm.getDefaultDisplay().getWidth();
+         height = wm.getDefaultDisplay().getHeight();
+        gear = new InvoluteGear(new PointF(width/2,height/2),300,0,context);
         paint1  = new Paint();
-        paint1.setColor(getResources().getColor(R.color.colorPrimary));
+        paint1.setColor(getResources().getColor(R.color.gold));
         paint1.setStrokeWidth(4);
         paint1.setStyle(Paint.Style.FILL);
         paint2  = new Paint();
@@ -57,7 +58,7 @@ public class GearView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        gear.draw(canvas,100,paint1,paint2);
+        gear.draw(canvas,paint1,paint2);
     }
 
     Handler handler = new Handler();
@@ -66,7 +67,7 @@ public class GearView extends View {
             @Override
             public void run() {
                 angle+=(float) (Math.PI/100);
-                gear.setSportAngular(angle);
+                gear.setSportAngular(angle,new PointF(width/2,height/2));
                 invalidate();
                 handler.postDelayed(this,5);
             }
@@ -75,3 +76,4 @@ public class GearView extends View {
 
     }
 }
+
