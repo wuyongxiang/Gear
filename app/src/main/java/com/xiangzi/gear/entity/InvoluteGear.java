@@ -8,7 +8,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.ninegear.R;
+import com.xiangzi.gear.R;
 
 import java.util.ArrayList;
 import java.util.List;
