@@ -1,4 +1,4 @@
-package com.ninegear.entity;
+package com.xiangzi.gear.entity;
 
 import android.content.Context;
 import android.graphics.Canvas;
