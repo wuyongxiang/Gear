@@ -6,33 +6,31 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.xiangzi.gear.entity.Gear;
-import com.xiangzi.gear.entity.NineGearLinkage;
+import com.ninegear.entity.NineGearLinkage;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 
 /**
  * Created by Administrator on 2017/9/26.
  */
 
 public class GearLinkView extends View {
-    private float angle = 0;
-    private Gear gear;
+    private float angleV_S = 0;
+    private float angleV_C = 0;
     private NineGearLinkage nineGearLinkage;
     private Paint paint1, paint2 ,paint3;
     double dV = 0;
     private PointF centerF;
     private VelocityTracker mTracker;
-    private GestureDetector ges;
-    private final float diameter = 250;
+    private final float diameter = 300;
     private boolean isOut = false;
     public GearLinkView(Context context) {
         super(context);
@@ -42,7 +40,7 @@ public class GearLinkView extends View {
         centerF = new PointF(width/2,height/2);
         nineGearLinkage = new NineGearLinkage(context,new PointF(width/2,height/2),diameter);
         paint1  = new Paint();
-        paint1.setColor(getResources().getColor(R.color.colorPrimary));
+        paint1.setColor(getResources().getColor(R.color.gold));
         paint1.setStrokeWidth(4);
         paint1.setStyle(Paint.Style.FILL);
         paint2  = new Paint();
@@ -83,13 +81,13 @@ public class GearLinkView extends View {
             if(Math.abs(dV)<0.00001f){
                 dV = 0;
             }else {
-                angle+=(float) dV;
                 if(isOut){
-                    nineGearLinkage.setAngledV(0 ,(float)dV);
-                }else {
-                    nineGearLinkage.setAngledV((float)dV,0);
-                }
+                    angleV_C +=(float) dV;
 
+                }else {
+                    angleV_S +=(float) dV;
+                }
+                nineGearLinkage.setAngleV(angleV_S ,angleV_C);
                 invalidate();
                 handler.postDelayed(this,5);
             }
@@ -110,7 +108,7 @@ public class GearLinkView extends View {
             case MotionEvent.ACTION_DOWN:
                 startY = event.getY();
                 startX = event.getX();
-                float r = (float) (nineGearLinkage.getShell().getDiameter()/Math.sqrt(2)+nineGearLinkage.getShell().getR());
+                float r = (float) (nineGearLinkage.getShell().getDiameter()+nineGearLinkage.getShell().getR());
                 boolean a  = Math.abs(centerF.x-startX)<r;
                 boolean a1 = Math.abs(centerF.y-startY)<r;
                 if(a&&a1){
@@ -134,12 +132,12 @@ public class GearLinkView extends View {
                 mA = (float) Math.atan((Y-centerF.y)/(X-centerF.x));
 
                 if(isOut){
-                    nineGearLinkage.setAngleV(0,mA-sA);
-                }else {
-                    angle = mA-sA;
-                    nineGearLinkage.setAngleV(angle ,0);
-                }
+                    angleV_C = mA-sA;
 
+                }else {
+                    angleV_S = mA-sA;
+                }
+                nineGearLinkage.setAngleV(angleV_S,angleV_C);
                 invalidate();
                 mTracker.addMovement(event);
                 mTracker.computeCurrentVelocity(1000);
@@ -167,7 +165,7 @@ public class GearLinkView extends View {
         mTracker.computeCurrentVelocity(1000);
         float xSpeed = Math.abs(mTracker.getXVelocity());
         float ySpeed = Math.abs(mTracker.getYVelocity());
-        float d = (float) ( Math.sqrt(xSpeed*xSpeed+ySpeed*ySpeed)/200/(Math.PI*diameter));
+        float d = (float) ( Math.sqrt(xSpeed*xSpeed+ySpeed*ySpeed)/50/(Math.PI*diameter));
         return d;
     }
 
@@ -178,3 +176,4 @@ public class GearLinkView extends View {
         }
     }
 }
+
